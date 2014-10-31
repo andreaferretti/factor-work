@@ -1,6 +1,6 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: arrays assocs hashtables kernel math sequences strings ;
+USING: arrays assocs hashtables kernel math quotations sequences strings ;
 IN: monoid
 
 GENERIC: |+| ( a b -- c )
@@ -24,3 +24,4 @@ M: fixnum |+| + ;
 M: float |+| + ;
 M: sequence |+| 2array concat ;
 M: hashtable |+| 2dup sum-common-keys assoc-union assoc-union ;
+M: quotation |+| [ bi |+| ] 2curry ;
