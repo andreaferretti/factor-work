@@ -1,6 +1,7 @@
 ! Copyright (C) 2014 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: base64 byte-arrays.hex grouping kernel math math.parser math.ranges math.vectors
+USING: base64 byte-arrays.hex grouping kernel
+  math math.bitwise math.parser math.ranges math.vectors
   sequences strings unicode.case unicode.categories ;
 IN: matasano.common
 
@@ -74,3 +75,7 @@ PRIVATE>
 PRIVATE>
 
 : repeated-xor ( cypher key -- hex ) [ repeated-nth bitxor >padded-hex ] curry map-index concat ;
+
+: edit-distance ( a b -- n ) [ bitxor ] B{ } 2map-as bit-count ;
+
+: avg ( xs -- average ) [ sum ] [ length ] bi / ;
