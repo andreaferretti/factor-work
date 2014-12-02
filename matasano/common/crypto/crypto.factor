@@ -1,6 +1,6 @@
 ! Copyright (C) 2014 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: alien.data continuations io.encodings.ascii
+USING: alien.data continuations destructors io.encodings.ascii
   io.encodings.string kernel libc locals matasano.libcrypto math
   namespaces openssl.libcrypto sequences ;
 IN: matasano.common.crypto
@@ -33,42 +33,32 @@ SYMBOL: evp-context
   <reversed> 0 [ [ 256 * ] dip + ] reduce ;
 
 : read-byte-number ( alien -- n )
-  dup 4 memory>byte-array
-  swap free byte-array>int ;
+  4 memory>byte-array byte-array>int ;
 
 : read-byte-text ( alien len -- text )
-  dupd memory>byte-array
-  swap free ascii decode ;
+  memory>byte-array ascii decode ;
+
+: read-bytes-with-length ( alien alien-len -- text ) read-byte-number read-byte-text ;
 
 :: init ( key method -- )
    evp-context get method f key f EVP_DecryptInit_ex
    1 = not [ "Failed cypher intialization" throw ] when ;
 
-! :: update ( cypher -- start )
-!    { { char 100000 } int } [ evp-context get -rot cypher dup length EVP_DecryptUpdate ] with-out-parameters
-!    1 = not [ "Failed cypher update" throw ] when
-!    head ;
-
-
 :: update ( cypher max-len -- start )
-  max-len malloc 4 malloc 2dup ! output parameters
-  evp-context get -rot ! context
-  cypher dup length ! input parameters
-  EVP_DecryptUpdate
-  1 = not [ "Failed cypher finalize" throw ] when
-  read-byte-number read-byte-text ;
+  [ max-len malloc &free 4 malloc &free 2dup
+    evp-context get -rot
+    cypher dup length EVP_DecryptUpdate
+    1 = not [ "Failed cypher finalize" throw ] when
+    read-bytes-with-length
+  ] with-destructors ;
 
-! :: finalize ( -- end )
-!   { { char 10000 } int } [ evp-context get -rot EVP_DecryptFinal_ex ] with-out-parameters
-!   1 = not [ "Failed cypher finalize" throw ] when
-!   head ;
-
-: finalize ( max-len -- end )
-  malloc 4 malloc 2dup ! output parameters
-  evp-context get -rot ! context
-  EVP_DecryptFinal_ex
-  1 = not [ "Failed cypher finalize" throw ] when
-  read-byte-number read-byte-text ;
+:: finalize ( max-len -- end )
+  [ max-len malloc &free 4 malloc &free 2dup
+    evp-context get -rot
+    EVP_DecryptFinal_ex
+    1 = not [ "Failed cypher finalize" throw ] when
+    read-bytes-with-length
+  ] with-destructors ;
 
 PRIVATE>
 
