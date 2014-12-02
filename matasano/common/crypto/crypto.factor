@@ -18,7 +18,6 @@ IN: matasano.common.crypto
   init-ssl-crypto
   [ call ] [ cleanup-ssl-crypto ] [ ] cleanup ; inline
 
-
 SYMBOL: evp-context
 
 : with-evp-context ( quot -- )
@@ -29,14 +28,11 @@ SYMBOL: evp-context
 
 <PRIVATE
 
-: byte-array>int ( bytes -- int )
-  <reversed> 0 [ [ 256 * ] dip + ] reduce ;
+: byte-array>int ( bytes -- int ) <reversed> 0 [ [ 256 * ] dip + ] reduce ;
 
-: read-byte-number ( alien -- n )
-  4 memory>byte-array byte-array>int ;
+: read-byte-number ( alien -- n ) 4 memory>byte-array byte-array>int ;
 
-: read-byte-text ( alien len -- text )
-  memory>byte-array ascii decode ;
+: read-byte-text ( alien len -- text ) memory>byte-array ascii decode ;
 
 : read-bytes-with-length ( alien alien-len -- text ) read-byte-number read-byte-text ;
 
