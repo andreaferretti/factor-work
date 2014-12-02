@@ -44,7 +44,7 @@ SYMBOL: evp-context
   [ max-len malloc &free 4 malloc &free 2dup
     evp-context get -rot
     cypher dup length EVP_DecryptUpdate
-    1 = not [ "Failed cypher finalize" throw ] when
+    1 = not [ "Failed cypher update" throw ] when
     read-bytes-with-length
   ] with-destructors ;
 
