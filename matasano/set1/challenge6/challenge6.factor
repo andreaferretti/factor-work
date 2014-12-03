@@ -1,7 +1,8 @@
 ! Copyright (C) 2014 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: grouping kernel matasano.common matasano.common.xor math
-  math.combinatorics math.ranges sequences ;
+USING: grouping io.encodings.ascii io.encodings.string kernel
+  matasano.common matasano.common.xor math math.combinatorics
+  math.ranges sequences ;
 IN: matasano.set1.challenge6
 
 : estimate-edit-distance ( cypher keysize -- x )
@@ -15,3 +16,5 @@ IN: matasano.set1.challenge6
 : blocks ( cypher -- blocks ) dup guess-keysize <groups> 1 head* ; ! remove the last group as it may be shorter
 
 : guess-key ( cypher -- key ) blocks flip [ find-char-key ] "" map-as ;
+
+: guess-key-and-decrypt ( cypher -- plaintext ) dup guess-key repeated-xor ascii decode ;

@@ -16,4 +16,4 @@ IN: matasano.common.xor
 
 PRIVATE>
 
-: repeated-xor ( cypher key -- hex ) [ repeated-nth bitxor >padded-hex ] curry map-index concat ;
+: repeated-xor ( cypher key -- hex ) [ repeated-nth bitxor ] curry map-index ;
