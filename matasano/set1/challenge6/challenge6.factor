@@ -1,6 +1,7 @@
 ! Copyright (C) 2014 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: grouping kernel matasano.common math math.combinatorics math.ranges sequences ;
+USING: grouping kernel matasano.common matasano.common.xor math
+  math.combinatorics math.ranges sequences ;
 IN: matasano.set1.challenge6
 
 : estimate-edit-distance ( cypher keysize -- x )

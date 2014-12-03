@@ -1,6 +1,6 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: matasano.common ;
+USING: matasano.common.bytes ;
 IN: matasano.set1.challenge1
 
 ! : solve ( -- result )
