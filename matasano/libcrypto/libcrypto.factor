@@ -26,6 +26,27 @@ FUNCTION: void ERR_free_strings ( ) ;
 ! evp.h -- see http://osxr.org/openssl/source/crypto/evp/evp.h
 ! ===============================================
 
+
+CONSTANT: EVP_CTRL_INIT               0
+CONSTANT: EVP_CTRL_SET_KEY_LENGTH     1
+CONSTANT: EVP_CTRL_GET_RC2_KEY_BITS   2
+CONSTANT: EVP_CTRL_SET_RC2_KEY_BITS   3
+CONSTANT: EVP_CTRL_GET_RC5_ROUNDS     4
+CONSTANT: EVP_CTRL_SET_RC5_ROUNDS     5
+CONSTANT: EVP_CTRL_RAND_KEY           6
+CONSTANT: EVP_CTRL_PBE_PRF_NID        7
+CONSTANT: EVP_CTRL_COPY               8
+CONSTANT: EVP_CTRL_GCM_SET_IVLEN      9
+CONSTANT: EVP_CTRL_GCM_GET_TAG        10
+CONSTANT: EVP_CTRL_GCM_SET_TAG        11
+CONSTANT: EVP_CTRL_GCM_SET_IV_FIXED   12
+CONSTANT: EVP_CTRL_GCM_IV_GEN         13
+CONSTANT: EVP_CTRL_CCM_SET_IVLEN      EVP_CTRL_GCM_SET_IVLEN
+CONSTANT: EVP_CTRL_CCM_GET_TAG        EVP_CTRL_GCM_GET_TAG
+CONSTANT: EVP_CTRL_CCM_SET_TAG        EVP_CTRL_GCM_SET_TAG
+CONSTANT: EVP_CTRL_CCM_SET_L          14
+CONSTANT: EVP_CTRL_CCM_SET_MSGLEN     15
+
 FUNCTION: void OPENSSL_add_all_algorithms_conf (  ) ;
 
 FUNCTION: void OPENSSL_add_all_algorithms_noconf (  ) ;
@@ -41,11 +62,19 @@ FUNCTION: EVP_CIPHER_CTX* EVP_CIPHER_CTX_new ( ) ;
 
 FUNCTION: void EVP_CIPHER_CTX_free ( EVP_CIPHER_CTX* ctx ) ;
 
+FUNCTION: int EVP_EncryptInit_ex ( EVP_CIPHER_CTX* ctx, EVP_CIPHER* cipher, ENGINE* impl, c-string key, c-string iv) ;
+
+FUNCTION: int EVP_EncryptUpdate ( EVP_CIPHER_CTX* ctx, char* out, int* outl, c-string in, int inl ) ;
+
+FUNCTION: int EVP_EncryptFinal_ex ( EVP_CIPHER_CTX* ctx, char* out, int* outl ) ;
+
 FUNCTION: int EVP_DecryptInit_ex ( EVP_CIPHER_CTX* ctx, EVP_CIPHER *cipher, ENGINE* impl, c-string key, c-string iv ) ;
 
 FUNCTION: int EVP_DecryptUpdate ( EVP_CIPHER_CTX* ctx, char* out, int* outl, c-string in, int inl ) ;
 
 FUNCTION: int EVP_DecryptFinal_ex ( EVP_CIPHER_CTX* ctx, char* outm, int* outl ) ;
+
+FUNCTION: int EVP_CIPHER_CTX_ctrl ( EVP_CIPHER_CTX* ctx, int type, int arg, void* ptr ) ;
 
 FUNCTION: EVP_CIPHER* EVP_enc_null ( ) ;
 FUNCTION: EVP_CIPHER* EVP_des_ecb ( ) ;
