@@ -30,17 +30,17 @@ SYMBOL: evp-context
 
 : byte-array>int ( bytes -- int ) <reversed> 0 [ [ 256 * ] dip + ] reduce ;
 
-: read-byte-number ( alien -- n ) 4 memory>byte-array byte-array>int ;
+: read-byte-number ( alien -- n ) 4 memory>byte-array byte-array>int dup . ;
 
-: read-byte-text ( alien len -- text ) memory>byte-array ascii decode ;
+: read-byte-text ( alien len -- text ) memory>byte-array dup . ascii decode ;
 
 : read-bytes-with-length ( alien alien-len -- text ) read-byte-number read-byte-text ;
 
-:: init ( key method -- )
-   evp-context get method f key f EVP_DecryptInit_ex
+:: init-dec ( key iv method -- )
+   evp-context get method f key iv EVP_DecryptInit_ex
    1 = not [ "Failed cypher intialization" throw ] when ;
 
-:: update ( cypher max-len -- start )
+:: update-dec ( cypher max-len -- start )
   [ max-len malloc &free 4 malloc &free 2dup
     evp-context get -rot
     cypher dup length EVP_DecryptUpdate
@@ -48,7 +48,7 @@ SYMBOL: evp-context
     read-bytes-with-length
   ] with-destructors ;
 
-:: finalize ( max-len -- end )
+:: finalize-dec ( max-len -- end )
   [ max-len malloc &free 4 malloc &free 2dup
     evp-context get -rot
     EVP_DecryptFinal_ex
@@ -56,10 +56,36 @@ SYMBOL: evp-context
     read-bytes-with-length
   ] with-destructors ;
 
+:: init-enc ( key iv method -- )
+  evp-context get method f f f EVP_EncryptInit_ex
+  1 = not [ "Failed cypher intialization" throw ] when ;
+
+:: update-enc ( plaintext max-len -- start )
+  [ max-len malloc &free 4 malloc &free 2dup
+    evp-context get -rot
+    plaintext dup length EVP_EncryptUpdate
+    1 = not [ "Failed cypher update" throw ] when
+    read-bytes-with-length
+  ] with-destructors ;
+
+:: finalize-enc ( max-len -- end )
+  [ max-len malloc &free 4 malloc &free 2dup
+    evp-context get -rot
+    EVP_EncryptFinal_ex
+    1 = not [ "Failed cypher finalize" throw ] when
+    read-bytes-with-length
+  ] with-destructors ;
+
 PRIVATE>
 
-: decrypt ( cypher key method -- plaintext )
+: encrypt ( cypher key iv method -- plaintext )
   [ [
-      init 10000 update 100 finalize append
+      init-enc 10000 "init done" . update-enc "udpate done" . ! 100 finalize-enc "finalize done" . append
+    ] 3curry with-evp-context
+  ] 3curry with-ssl-crypto ;
+
+: decrypt ( cypher key iv method -- plaintext )
+  [ [
+      init-dec 10000 update-dec 100 finalize-dec append
     ] 3curry with-evp-context
   ] 3curry with-ssl-crypto ;

@@ -1,6 +1,7 @@
 ! Copyright (C) 2014 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: tools.test matasano.set1.challenge7 base64 io.encodings.ascii io.files sequences ;
+USING: tools.test matasano.set1.challenge7
+  ascii base64 io.encodings.ascii io.files kernel sequences ;
 IN: matasano.set1.challenge7.tests
 
 
@@ -82,10 +83,9 @@ Play that funky music Come on, Come on, let me hear
 Play that funky music white boy you say it, say it 
 Play that funky music A little louder now 
 Play that funky music, white boy Come on, Come on, Come on 
-Play that funky music 
-" ]
+Play that funky music " ]
 [
   "resource:work/challenge7" ascii file-lines concat base64>
   "YELLOW SUBMARINE"
-  decrypt-ecb
+  decrypt-ecb [ printable? not ] trim-tail
 ] unit-test
