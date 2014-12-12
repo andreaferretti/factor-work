@@ -1,11 +1,11 @@
 ! Copyright (C) 2014 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: help.markup help.syntax kernel strings ;
+USING: help.markup help.syntax byte-arrays kernel strings ;
 IN: matasano.set1.challenge7
 
-HELP: decrypt-ecb
+HELP: decrypt-ecb-text
 { $values
-    { "cypher" null } { "key" null }
+    { "cypher" byte-array } { "key" byte-array }
     { "plaintext" string }
 }
 { $description "" } ;

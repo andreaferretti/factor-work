@@ -1,16 +1,8 @@
 ! Copyright (C) 2014 Your name.
 ! See http://factorcode.org/license.txt for BSD license.
 USING: tools.test matasano.set2.challenge10
-  ascii base64 io.encodings.ascii io.encodings.string io.files kernel sequences ;
+  ascii base64 io.encodings.ascii io.files kernel sequences ;
 IN: matasano.set2.challenge10.tests
-
-[ "Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura che la diritta via era smar" ]
-[
-  "Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura che la diritta via era smar"
-  B{ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 } "YELLOW SUBMARINE" encrypt-cbc
-  B{ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 } "YELLOW SUBMARINE" decrypt-cbc
-  ascii decode
-] unit-test
 
 [ "I'm back and I'm ringin' the bell 
 A rockin' on the mike while the fly girls yell 
@@ -93,6 +85,6 @@ Play that funky music, white boy Come on, Come on, Come on
 Play that funky music " ]
 [
   "resource:work/challenge10" ascii file-lines concat base64>
-  B{ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 } "YELLOW SUBMARINE" decrypt-cbc
-  ascii decode [ printable? not ] trim-tail
+  B{ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 } "YELLOW SUBMARINE" decrypt-cbc-text
+  [ printable? not ] trim-tail
 ] unit-test

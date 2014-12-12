@@ -87,5 +87,5 @@ Play that funky music " ]
 [
   "resource:work/challenge7" ascii file-lines concat base64>
   "YELLOW SUBMARINE"
-  decrypt-ecb [ printable? not ] trim-tail
+  decrypt-ecb-text [ printable? not ] trim-tail
 ] unit-test

@@ -1,12 +1,6 @@
-! Copyright (C) 2014 Your name.
+! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: crypto.aes grouping io.encodings.ascii
-  io.encodings.string kernel sequences ;
+USING: matasano.common.ecb io.encodings.ascii io.encodings.string ;
 IN: matasano.set1.challenge7
 
-
-! : decrypt-ecb ( cypher key -- plaintext ) f EVP_aes_128_ecb decrypt ;
-
-: decrypt-ecb ( cypher key -- plaintext ) swap
-  16 <groups> [ aes-decrypt-block ] with map concat
-  ascii decode ;
+: decrypt-ecb-text ( cypher key -- plaintext ) decrypt-ecb ascii decode ;
