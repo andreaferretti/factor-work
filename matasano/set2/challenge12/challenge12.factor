@@ -1,9 +1,8 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: arrays assocs base64 grouping hashtables kernel
+USING: arrays assocs base64 grouping hashtables kernel locals
   matasano.common.ecb matasano.common.padding math math.ranges
   namespaces random sequences sequences.repeating ;
-QUALIFIED: generalizations
 IN: matasano.set2.challenge12
 
 CONSTANT: unknown-string-lines "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
@@ -34,28 +33,28 @@ SYMBOL: mystery-key
   25 [1,b]
   [ first-4-groups-repeat? ] with find nip ;
 
-: encrypt-1-block ( block -- block' ) mystery-key get append-then-encrypt 16 head ;
+: get-block ( bytes n -- block ) 16 * tail 16 head ;
 
-: enough-a ( known-bytes -- as ) length 15 swap - "A" swap repeat ;
+: encrypt-1-block ( bytes n -- block' ) [ mystery-key get append-then-encrypt ] dip get-block ;
+
+! A string composed of just enough "A" to get the next byte
+: enough-a ( known-bytes -- as ) length 16 mod 15 swap - "A" swap repeat ;
+
+: with-enough-a ( known-bytes -- as+bytes ) dup enough-a prepend ;
+
+: block-position ( known-bytes -- n ) length 16 /i ;
+
+: inverse-map ( seq quot: ( x -- y ) -- map ) [ [ ] bi 2array ] curry map >hashtable ; inline
+
+: test-bytes ( -- seq ) 255 [0,b] ; inline
+
+:: encrypt-after ( known-bytes byte -- block )
+  known-bytes with-enough-a byte suffix
+  known-bytes block-position encrypt-1-block ;
 
 : detect-next-byte ( known-bytes -- byte )
-  [ enough-a encrypt-1-block ]
-  [ dup enough-a prepend 255 [0,b]
-    [
-      [ suffix encrypt-1-block ] [ nip ] 2bi 2array
-    ] with
-    map >hashtable
-  ] bi at ;
+  [ [ enough-a ] [ block-position ] bi encrypt-1-block ]
+  [ test-bytes [ encrypt-after ] with inverse-map ]
+  bi at ;
 
-: detect-1-byte ( start -- byte )
-  [ encrypt-1-block ]
-  [ 255 [0,b]
-    [
-      [ suffix encrypt-1-block ] [ nip ] 2bi 2array
-    ] with
-    map >hashtable
-  ] bi at ;
-
-: detect-16-bytes ( -- bytes )
-  B{ } 16
-  [ dup detect-next-byte suffix ] times ;
+: detect-bytes ( n -- bytes ) B{ } swap [ dup detect-next-byte suffix ] times ;
