@@ -1,4 +1,4 @@
-! Copyright (C) 2014 Your name.
+! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
 USING: tools.test matasano.set2.challenge12 io.encodings.ascii io.encodings.string ;
 IN: matasano.set2.challenge12.tests
