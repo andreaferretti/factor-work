@@ -19,6 +19,8 @@ SYMBOL: mystery-key
 
 16 random-bytes mystery-key set
 
+: with-key ( quot -- ) [ 16 random-bytes mystery-key ] dip with-variable ; inline
+
 : encrypt-repeated-a ( n -- cypher ) "A" swap repeat mystery-key get append-then-encrypt ;
 
 : all-equal? ( seq -- ? ) dup first [ = ] curry all? ;
@@ -37,8 +39,8 @@ SYMBOL: mystery-key
 : enough-a ( known-bytes -- as ) length 15 swap - "A" swap repeat ;
 
 : detect-next-byte ( known-bytes -- byte )
-  [ dup enough-a prepend encrypt-1-block ]
-  [ enough-a 255 [0,b]
+  [ enough-a encrypt-1-block ]
+  [ dup enough-a prepend 255 [0,b]
     [
       [ suffix encrypt-1-block ] [ nip ] 2bi 2array
     ] with
