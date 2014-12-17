@@ -1,6 +1,6 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors kernel lexer namespaces packages.projects
+USING: accessors kernel lexer namespaces packages
   packages.scm parser sequences ;
 IN: packages.syntax
 

@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 USING: accessors kernel namespaces packages.paths packages.scm
   parser sequences strings vocabs ;
-IN: packages.projects
+IN: packages
 
 TUPLE: project
   { name string }
