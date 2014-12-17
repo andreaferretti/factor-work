@@ -56,34 +56,36 @@ GENERIC: checkout ( dependency -- )
 
 ! SCM-specific implementations
 
-M: git-dependency clone
+<PRIVATE
+
+: scm-clone ( dependency commands -- )
+  swap
   [ ref>> url>> ]
   [ name>> directory-for-dep ]
-  bi 2array { "git" "clone" } prepend
+  bi 2array append
   try-process ;
 
-M: git-dependency fetch
-  name>> directory-for-dep
-  [ { "git" "fetch" } try-process ]
+: scm-fetch ( dependency commands -- )
+  [ name>> directory-for-dep ] dip
+  [ try-process ] curry
   with-directory ;
 
-M: git-dependency checkout
-  [ name>> directory-for-dep ] [ ref>> version>> ] bi
-  '[ { "git" "checkout" } _ suffix try-process ]
+: scm-checkout ( dependency commands -- )
+  [ drop name>> directory-for-dep ]
+  [ swap ref>> version>> suffix ] 2bi
+  [ try-process ] curry
   with-directory ;
 
-M: hg-dependency clone
-  [ ref>> url>> ]
-  [ name>> directory-for-dep ]
-  bi 2array { "hg" "clone" } prepend
-  try-process ;
+PRIVATE>
 
-M: hg-dependency fetch
-  name>> directory-for-dep
-  [ { "hg" "pull" } try-process ]
-  with-directory ;
+M: git-dependency clone { "git" "clone" } scm-clone ;
 
-M: hg-dependency checkout
-  [ name>> directory-for-dep ] [ ref>> version>> ] bi
-  '[ { "hg" "update" } _ suffix try-process ]
-  with-directory ;
+M: git-dependency fetch { "git" "fetch" } scm-fetch ;
+
+M: git-dependency checkout { "git" "checkout" } scm-checkout ;
+
+M: hg-dependency clone { "hg" "clone" } scm-clone ;
+
+M: hg-dependency fetch { "hg" "pull" }  scm-fetch ;
+
+M: hg-dependency checkout { "hg" "update" } scm-checkout ;
