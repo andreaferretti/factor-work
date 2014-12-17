@@ -32,21 +32,6 @@ PRIVATE>
 
 <PRIVATE
 
-: vocab-error-message ( vocab -- str ) "More than one file found for vocabulary: " prepend ;
-
-: check-only-one-result ( vocab paths -- )
-  length 1 =
-  swap [ vocab-error-message throw ] curry unless ;
-
-PRIVATE>
-
-: vocab-main-file ( vocab -- path )
-  dup vocab-files [ exists? ] filter
-  dup [ check-only-one-result ] dip
-  first ;
-
-<PRIVATE
-
 : reset-vocab-roots ( -- ) default-roots vocab-roots set ;
 
 PRIVATE>

@@ -1,7 +1,7 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
 USING: accessors kernel namespaces packages.paths packages.scm
-  parser sequences strings vocabs ;
+  parser sequences strings vocabs vocabs.loader ;
 IN: packages
 
 TUPLE: project
@@ -17,8 +17,6 @@ SYMBOL: current-project
 <PRIVATE
 
 DEFER: activate-file
-
-: vocab-run ( vocab -- ) vocab-main-file run-file ;
 
 : setup-deps ( project -- ) deps>> [ setup ] each ;
 
@@ -40,4 +38,4 @@ DEFER: activate-file
 
 PRIVATE>
 
-: activate ( vocab -- ) vocab-main-file activate-file ;
+: activate ( vocab -- ) vocab-source-path activate-file ;
