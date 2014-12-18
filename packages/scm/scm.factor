@@ -87,8 +87,9 @@ M: git-project tag
 
 M: git-project push
   dup url>>
-  '[ "git" , "push" , _ , "master" , ] { } make
-  execute-in-context ;
+  [ '[ "git" , "push" , _ , "master" , ] { } make ]
+  [ '[ "git" , "push" , _ , "--tags" , ] { } make ] bi 2array
+  execute-all-in-context ;
 
 M: git-project scm-dir drop ".git" ;
 
