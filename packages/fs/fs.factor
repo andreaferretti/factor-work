@@ -21,15 +21,17 @@ default-package-cache package-cache set-global
 
 <PRIVATE
 
-: rel-directory-for-dep ( name -- path ) package-cache get prepend-path ;
+: rel-project-directory ( name -- path ) package-cache get prepend-path ;
 
 PRIVATE>
 
-: directory-for-dep ( name -- path ) rel-directory-for-dep absolute-path ;
+: project-directory ( name -- path ) rel-project-directory absolute-path ;
 
-: package-exists? ( name -- ? ) directory-for-dep exists? ;
+: project-exists? ( name -- ? ) project-directory exists? ;
 
-: project-file ( name -- path ) rel-directory-for-dep "project.factor" append-path ;
+: project-file ( name -- path ) rel-project-directory "project.factor" append-path ;
+
+: contains-dir? ( base dir -- ? ) append-path exists? ;
 
 <PRIVATE
 
@@ -81,4 +83,4 @@ PRIVATE>
 PRIVATE>
 
 : set-vocab-roots ( dependencies -- )
-  reset-vocab-roots [ name>> rel-directory-for-dep add-vocab-root ] each ;
+  reset-vocab-roots [ name>> rel-project-directory add-vocab-root ] each ;

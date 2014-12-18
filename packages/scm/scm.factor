@@ -4,56 +4,98 @@ USING: accessors arrays io.directories io.launcher
   kernel packages.fs packages.projects sequences ;
 IN: packages.scm
 
-GENERIC: clone ( dependency -- )
+GENERIC: clone ( project -- )
 
-GENERIC: fetch ( dependency -- )
+GENERIC: fetch ( project -- )
 
-GENERIC: checkout ( dependency -- )
+GENERIC: checkout ( project -- )
 
-: ensure ( dependency -- ) dup name>> package-exists? [ fetch ] [ clone ] if ;
+GENERIC: ensure-init ( project -- )
 
-: setup ( dependency -- ) dup ensure checkout ;
+GENERIC: init ( project -- )
+
+GENERIC: commit-all ( project -- )
+
+GENERIC: tag ( project -- )
+
+GENERIC: push ( project -- )
+
+GENERIC: scm-dir ( project -- path )
+
+: ensure ( project -- ) dup name>> project-exists? [ fetch ] [ clone ] if ;
+
+: setup ( project -- ) dup ensure checkout ;
+
+: commit ( project -- )
+  dup ensure-init
+  dup commit-all
+  dup tag
+  dup url>> empty? [ drop ] [ push ] if ;
 
 ! SCM-specific implementations
 
 <PRIVATE
 
-: scm-clone ( dependency commands -- )
+: scm-clone ( project commands -- )
   swap
   [ url>> ]
-  [ name>> directory-for-dep ]
+  [ name>> project-directory ]
   bi 2array append
   try-process ;
 
-: scm-fetch ( dependency commands -- )
-  [ name>> directory-for-dep ] dip
+: execute-in-context ( project commands -- )
+  [ name>> project-directory ] dip
   [ try-process ] curry
   with-directory ;
 
-: scm-checkout ( dependency commands -- )
-  [ drop name>> directory-for-dep ]
+: execute-all-in-context ( project commands -- ) [ execute-in-context ] with each ;
+
+: already-init? ( project -- ? )
+  [ name>> project-directory ] [ scm-dir ] bi contains-dir? ;
+
+: scm-ensure-init ( project -- )
+  dup already-init? [ drop ] [ init ] if ;
+
+: scm-checkout ( project commands -- )
+  [ drop name>> project-directory ]
   [ swap version>> suffix ] 2bi
   [ try-process ] curry
   with-directory ;
 
 PRIVATE>
 
+! Git
+
+M: git-project init { "git" "init" } execute-in-context ;
+
 M: git-project clone { "git" "clone" } scm-clone ;
 
-M: git-project fetch { "git" "fetch" } scm-fetch ;
+M: git-project fetch { "git" "fetch" } execute-in-context ;
 
 M: git-project checkout { "git" "checkout" } scm-checkout ;
 
-M: hg-project clone { "hg" "clone" } scm-clone ;
+M: git-project ensure-init scm-ensure-init ;
 
-M: hg-project fetch { "hg" "pull" }  scm-fetch ;
+M: git-project commit-all
+  {
+    { "git" "add" "--all" }
+    { "git" "commit" "-m" "auto-commit" }
+  } execute-all-in-context ;
 
-M: hg-project checkout { "hg" "update" } scm-checkout ;
+M: git-project tag
+  dup version>> { "git" "tag" } swap suffix execute-in-context ;
 
-! Paths related to the SCM
-
-GENERIC: scm-dir ( project -- path )
+M: git-project push
+  dup url>> { "git" "push" } swap suffix execute-in-context ;
 
 M: git-project scm-dir drop ".git" ;
+
+! Hg
+
+M: hg-project clone { "hg" "clone" } scm-clone ;
+
+M: hg-project fetch { "hg" "pull" }  execute-in-context ;
+
+M: hg-project checkout { "hg" "update" } scm-checkout ;
 
 M: hg-project scm-dir drop ".hg" ;
