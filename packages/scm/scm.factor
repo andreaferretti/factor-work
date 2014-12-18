@@ -89,3 +89,16 @@ M: hg-dependency clone { "hg" "clone" } scm-clone ;
 M: hg-dependency fetch { "hg" "pull" }  scm-fetch ;
 
 M: hg-dependency checkout { "hg" "update" } scm-checkout ;
+
+! Paths related to the SCM
+
+: scm-dir ( scm -- path ) {
+    { git [ ".git" ] }
+    { hg [ ".hg" ] }
+  } case ;
+
+! GENERIC: scm-dir ( scm -- path )
+
+! M: git scm-dir drop ".git" ;
+
+! M: hg scm-dir drop ".hg" ;

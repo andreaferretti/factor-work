@@ -22,6 +22,8 @@ SYNTAX: PROJECT: scan-token new-project current-project set-global ;
 
 SYNTAX: VERSION: scan-token current-project get swap >>version drop ;
 
+SYNTAX: SCM: scan-word current-project get swap >>scm drop ;
+
 SYNTAX: VOCAB: scan-token current-project get swap add-vocab drop ;
 
 SYNTAX: VOCABS: ";" parse-tokens current-project get swap add-vocabs drop ;

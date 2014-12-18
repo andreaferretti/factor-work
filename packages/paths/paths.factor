@@ -1,8 +1,8 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors io.directories io.files io.pathnames kernel
-  math.order namespaces parser sequences vocabs.files
-  vocabs.loader ;
+USING: accessors io.directories io.directories.hierarchy
+  io.files io.files.info io.pathnames kernel math.order namespaces
+  parser sequences vocabs.files vocabs.loader ;
 IN: packages.paths
 
 CONSTANT: default-package-cache "resource:cache"
@@ -53,12 +53,26 @@ PRIVATE>
   [ relative-path append-path ] dip
   swap copy-file ;
 
+: (clean-preserving) ( path preserving -- )
+  [
+    [
+      over start
+      [ drop ] [
+        dup file-info regular-file?
+        [ delete-file ] [ drop ] if
+      ] if
+    ] curry each
+  ] curry with-directory-tree-files ;
+
 PRIVATE>
 
 : copy-vocab ( dest vocab -- )
   [ find-vocab-root ]
   [ vocab-files [ exists? ] filter ] bi
   [ copy-relative-to ] 2with each ;
+
+: clean-preserving ( path preserving -- )
+  over exists? [ (clean-preserving) ] [ 2drop ] if ;
 
 <PRIVATE
 
