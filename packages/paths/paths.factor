@@ -1,7 +1,8 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors io.files io.pathnames kernel namespaces parser
-  sequences vocabs.files vocabs.loader ;
+USING: accessors io.directories io.files io.pathnames kernel
+  math.order namespaces parser sequences vocabs.files
+  vocabs.loader ;
 IN: packages.paths
 
 CONSTANT: default-package-cache "resource:cache"
@@ -29,6 +30,35 @@ PRIVATE>
 : package-exists? ( name -- ? ) directory-for-dep exists? ;
 
 : project-file ( name -- path ) rel-directory-for-dep "project.factor" append-path ;
+
+<PRIVATE
+
+: min-length ( seq1 seq2 -- n ) [ length ] bi@ min ;
+
+: common-head-els ( seq1 seq2 -- i ) [ mismatch ] [ min-length ] 2bi or ;
+
+PRIVATE>
+
+: relative-path ( from to -- path )
+  [ path-components ] bi@
+  2dup common-head-els
+  [ tail [ drop ".." ] map ] [ tail ] bi-curry
+  bi* append
+  path-separator join ; inline
+
+<PRIVATE
+
+: copy-relative-to ( to from path -- )
+  dup
+  [ relative-path append-path ] dip
+  swap copy-file ;
+
+PRIVATE>
+
+: copy-vocab ( dest vocab -- )
+  [ find-vocab-root ]
+  [ vocab-files [ exists? ] filter ] bi
+  [ copy-relative-to ] 2with each ;
 
 <PRIVATE
 
