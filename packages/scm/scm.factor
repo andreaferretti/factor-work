@@ -1,7 +1,7 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors arrays io.directories io.launcher
-  kernel packages.fs packages.projects sequences ;
+USING: accessors arrays fry io.directories io.launcher kernel
+  make packages.fs packages.projects sequences ;
 IN: packages.scm
 
 GENERIC: clone ( project -- )
@@ -86,7 +86,9 @@ M: git-project tag
   dup version>> { "git" "tag" } swap suffix execute-in-context ;
 
 M: git-project push
-  dup url>> { "git" "push" } swap suffix execute-in-context ;
+  dup url>>
+  '[ "git" , "push" , _ , "master" , ] { } make
+  execute-in-context ;
 
 M: git-project scm-dir drop ".git" ;
 
