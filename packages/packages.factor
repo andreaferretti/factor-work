@@ -1,8 +1,8 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
 USING: accessors kernel namespaces packages.fs packages.projects
-  packages.scm parser sequences strings vocabs vocabs.loader
-  words.symbol ;
+  packages.publish packages.scm parser sequences strings vocabs
+  vocabs.loader words.symbol ;
 IN: packages
 
 <PRIVATE
@@ -30,3 +30,5 @@ DEFER: activate-file
 PRIVATE>
 
 : activate ( vocab -- ) vocab-source-path activate-file ;
+
+: publish ( vocab -- ) vocab-source-path run-file publish-current ;

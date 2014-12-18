@@ -1,7 +1,7 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors kernel namespaces packages packages.fs
-  packages.projects packages.scm parser sequences vocabs.loader ;
+USING: accessors kernel namespaces packages.fs packages.projects
+  packages.scm sequences ;
 IN: packages.publish
 
 : copy-project ( project -- )
@@ -18,5 +18,3 @@ IN: packages.publish
   dup copy-project commit-project ;
 
 : publish-current ( -- ) current-project get publish-project ;
-
-: publish ( vocab -- ) vocab-source-path run-file publish-current ;
