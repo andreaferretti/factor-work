@@ -31,4 +31,4 @@ PRIVATE>
 
 : activate ( vocab -- ) vocab-source-path activate-file ;
 
-: publish ( vocab -- ) vocab-source-path run-file publish-current ;
+: publish ( vocab -- ) vocab-source-path dup run-file publish-current ;
