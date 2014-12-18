@@ -12,6 +12,8 @@ IN: packages.syntax
 
 : add-vocab ( project vocab -- project ) [ dup vocabs>> ] dip suffix >>vocabs ;
 
+: add-vocabs ( project vocabs -- project ) [ dup vocabs>> ] dip append >>vocabs ;
+
 : parse-dependency ( -- dep ) scan-token \ ; parse-until first <dependency> ;
 
 PRIVATE>
@@ -21,6 +23,8 @@ SYNTAX: PROJECT: scan-token new-project current-project set-global ;
 SYNTAX: VERSION: scan-token current-project get swap >>version drop ;
 
 SYNTAX: VOCAB: scan-token current-project get swap add-vocab drop ;
+
+SYNTAX: VOCABS: ";" parse-tokens current-project get swap add-vocabs drop ;
 
 SYNTAX: GIT{ \ } [ first2 <git> ] parse-literal ;
 
