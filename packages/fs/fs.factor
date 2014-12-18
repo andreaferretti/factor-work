@@ -3,7 +3,7 @@
 USING: accessors io.directories io.directories.hierarchy
   io.files io.files.info io.pathnames kernel math.order namespaces
   parser sequences vocabs.files vocabs.loader ;
-IN: packages.paths
+IN: packages.fs
 
 CONSTANT: default-package-cache "resource:cache"
 

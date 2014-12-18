@@ -1,7 +1,7 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors arrays io.directories io.launcher kernel
-  packages.paths sequences strings words.symbol ;
+USING: accessors arrays combinators io.directories io.launcher
+  kernel packages.fs sequences strings words.symbol ;
 IN: packages.scm
 
 ! A few word to construct dependencies

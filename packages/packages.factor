@@ -1,6 +1,6 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors kernel namespaces packages.paths packages.scm
+USING: accessors kernel namespaces packages.fs packages.scm
   parser sequences strings vocabs vocabs.loader words.symbol ;
 IN: packages
 
