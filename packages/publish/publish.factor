@@ -1,7 +1,7 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
 USING: accessors kernel namespaces packages packages.fs
-  packages.scm parser sequences vocabs.loader ;
+  packages.projects packages.scm parser sequences vocabs.loader ;
 IN: packages.publish
 
 : copy-project ( project -- )
@@ -9,7 +9,7 @@ IN: packages.publish
   [ copy-vocab ] with each ;
 
 : clean-project ( project -- )
-  [ name>> directory-for-dep ] [ scm>> scm-dir ] bi clean-preserving ;
+  [ name>> directory-for-dep ] [ scm-dir ] bi clean-preserving ;
 
 : commit-project ( project -- ) drop ;
 

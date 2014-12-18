@@ -9,8 +9,6 @@ VERSION: 0.1.0
 
 VOCABS: packages packages.syntax ;
 
-DEPENDENCY: monoid
-  GITHUB{ "andreaferretti" "factor-monoid" "0.1.0" } ;
+GITHUB-DEP: monoid andreaferretti factor-monoid 0.1.0 ;
 
-DEPENDENCY: options
-  GITHUB{ "andreaferretti" "factor-options" "0.1.0" } ;
+GITHUB-DEP: options andreaferretti factor-options 0.1.0 ;

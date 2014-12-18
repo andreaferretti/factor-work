@@ -1,19 +1,9 @@
 ! Copyright (C) 2014 Andrea Ferretti.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors kernel namespaces packages.fs packages.scm
-  parser sequences strings vocabs vocabs.loader words.symbol ;
+USING: accessors kernel namespaces packages.fs packages.projects
+  packages.scm parser sequences strings vocabs vocabs.loader
+  words.symbol ;
 IN: packages
-
-TUPLE: project
-  { name string }
-  { version string }
-  { scm symbol initial: git }
-  { vocabs sequence }
-  { deps sequence } ;
-
-C: <project> project
-
-SYMBOL: current-project
 
 <PRIVATE
 
@@ -28,14 +18,14 @@ DEFER: activate-file
 : setup-recursive ( project -- )
   deps>> [ name>> project-file activate-file ] each ;
 
-: setup ( project -- )
+: setup-all ( project -- )
   dup setup-deps
   dup setup-roots
   dup setup-recursive
   setup-requirements ;
 
 : activate-file ( path -- )
-  run-file current-project get setup ;
+  run-file current-project get setup-all ;
 
 PRIVATE>
 
