@@ -92,10 +92,26 @@ M: git-project scm-dir drop ".git" ;
 
 ! Hg
 
+M: hg-project init { "hg" "init" } execute-in-context ;
+
 M: hg-project clone { "hg" "clone" } scm-clone ;
 
 M: hg-project fetch { "hg" "pull" }  execute-in-context ;
 
 M: hg-project checkout { "hg" "update" } scm-checkout ;
+
+M: hg-project ensure-init scm-ensure-init ;
+
+M: hg-project commit-all
+  {
+    { "hg" "addremove" }
+    { "hg" "commit" "-m" "auto-commit" }
+  } execute-all-in-context ;
+
+M: hg-project tag
+  dup version>> { "hg" "tag" } swap suffix execute-in-context ;
+
+M: hg-project push
+  dup url>> { "hg" "push" } swap suffix execute-in-context ;
 
 M: hg-project scm-dir drop ".hg" ;
